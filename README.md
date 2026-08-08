@@ -1,4 +1,4 @@
-# 🚀 edgebridge-aeb
+# 🚀 edgebridge
 
 > 🇰🇷 SmartThings Edge 브리지 (EdgeBridge 기반)  
 > 🇺🇸 SmartThings Edge Bridge based on EdgeBridge
@@ -50,30 +50,23 @@ It ensures stable mDNS discovery and LAN-based features.
 
 ---
 
-### ▶ Docker Run
+### ▶ Docker Run (빌드 포함 | build & run)
 
 ```bash
+# 1) 저장소 클론 | Clone the repository
+git clone https://github.com/yujin6121/edgebridge.git
+cd edgebridge
+
+# 2) 이미지 빌드 | Build the image (local)
+docker build -t edgebridge:latest .
+
+# 3) 실행 | Run (host 네트워크 권장 / host network recommended)
 mkdir -p ./data
-
-docker run -d --name edgebridge-aeb \
+docker run -d --name edgebridge \
   --network host \
   -v $(pwd)/data:/data \
   --restart unless-stopped \
-  woobooung/edgebridge-aeb:latest
-```
-
----
-
-### ▶ 직접 빌드 | Build from Source
-
-```bash
-docker build -t edgebridge-aeb .
-
-docker run -d --name edgebridge-aeb \
-  --network host \
-  -v $(pwd)/data:/data \
-  --restart unless-stopped \
-  edgebridge-aeb
+  edgebridge:latest
 ```
 
 ---
@@ -90,13 +83,25 @@ http://<host-ip>:8088/web
 ### 🔑 PAT 포함 실행 | Run with PAT
 
 ```bash
-docker run -d --name edgebridge-aeb \
+docker run -d --name edgebridge \
   --network host \
   -v $(pwd)/data:/data \
   -e EB_ST_TOKEN=<SmartThings PAT> \
   --restart unless-stopped \
-  woobooung/edgebridge-aeb:latest
+  edgebridge:latest
 ```
+
+---
+
+### ▶ Docker Compose
+
+```bash
+git clone https://github.com/yujin6121/edgebridge.git
+cd edgebridge
+docker compose up -d
+```
+
+저장소의 `docker-compose.yml`은 host 네트워크 + 소스 빌드(`build: .`)를 사용하며 로컬에 이미지를 빌드합니다. 데이터는 `./data` 볼륨에 저장되고 재시작은 `unless-stopped`입니다.
 
 ---
 
