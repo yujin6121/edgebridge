@@ -1,4 +1,4 @@
-# 🚀 edgebridge-aeb
+# 🚀 edgebridge
 
 > 🇰🇷 SmartThings Edge 브리지 (EdgeBridge 기반)  
 > 🇺🇸 SmartThings Edge Bridge based on EdgeBridge
