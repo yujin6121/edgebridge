@@ -1,16 +1,58 @@
-# edgebridge-aeb
+# 🚀 edgebridge-aeb
 
-> [WooBooung/edgebridge](https://github.com/WooBooung/edgebridge) 기반의 SmartThings Edge 브리지입니다.
+> 🇰🇷 SmartThings Edge 브리지 (EdgeBridge 기반)  
+> 🇺🇸 SmartThings Edge Bridge based on EdgeBridge
 
-## 빠른 시작 (Docker)
+![Docker](https://img.shields.io/badge/docker-ready-blue)
+![Status](https://img.shields.io/badge/status-active-success)
+![License](https://img.shields.io/badge/license-Apache%202.0-green)
 
-기본 권장 방식은 Docker host 네트워크입니다. mDNS 자동 발견, 허브 포워딩, MQTT 포워딩은 실제 LAN IP가 중요하기 때문에 bridge 네트워크보다 host 네트워크가 안정적입니다.
+---
 
-### Docker run
+## ✨ 특징 | Features
 
-Docker Hub 이미지를 사용하는 경우:
+### 🇰🇷
+- ✅ SmartThings Edge 브리지
+- 🌐 mDNS 자동 발견 지원
+- 🔄 MQTT 포워딩 지원
+- 🐳 Docker 기반 실행
+- ⚡ 빠른 설치 및 간편한 설정
 
-```sh
+### 🇺🇸
+- ✅ SmartThings Edge bridge
+- 🌐 Supports mDNS auto discovery
+- 🔄 MQTT forwarding support
+- 🐳 Docker-based deployment
+- ⚡ Fast setup and easy configuration
+
+---
+
+## 📑 목차 | Table of Contents
+
+- [빠른 시작 / Quick Start](#-빠른-시작--quick-start)
+- [설정 / Configuration](#-설정--configuration)
+- [데이터 저장 / Data Storage](#-데이터-저장--data-storage)
+- [웹 대시보드 / Web Dashboard](#-웹-대시보드--web-dashboard)
+
+---
+
+## ⚡ 빠른 시작 | Quick Start
+
+### 🐳 Docker (권장 / Recommended)
+
+### 🇰🇷
+Docker host 네트워크 사용을 권장합니다.  
+mDNS 및 실제 LAN IP 기반 기능에서 더 안정적입니다.
+
+### 🇺🇸
+Using Docker with host network is recommended.  
+It ensures stable mDNS discovery and LAN-based features.
+
+---
+
+### ▶ Docker Run
+
+```bash
 mkdir -p ./data
 
 docker run -d --name edgebridge-aeb \
@@ -20,9 +62,11 @@ docker run -d --name edgebridge-aeb \
   woobooung/edgebridge-aeb:latest
 ```
 
-소스에서 직접 빌드하는 경우:
+---
 
-```sh
+### ▶ 직접 빌드 | Build from Source
+
+```bash
 docker build -t edgebridge-aeb .
 
 docker run -d --name edgebridge-aeb \
@@ -32,88 +76,58 @@ docker run -d --name edgebridge-aeb \
   edgebridge-aeb
 ```
 
-접속:
+---
 
-```text
+### 🌐 접속 | Access
+
+```
 http://<host-ip>:8088
 http://<host-ip>:8088/web
 ```
 
-PAT를 함께 넣어 실행하려면:
+---
 
-```sh
+### 🔑 PAT 포함 실행 | Run with PAT
+
+```bash
 docker run -d --name edgebridge-aeb \
   --network host \
   -v $(pwd)/data:/data \
-  -e EB_ST_TOKEN=<36자 SmartThings PAT> \
+  -e EB_ST_TOKEN=<SmartThings PAT> \
   --restart unless-stopped \
   woobooung/edgebridge-aeb:latest
 ```
 
-호스트의 8088 포트가 이미 사용 중이면 `EB_SERVER_PORT`로 변경할 수 있습니다.
+---
 
-### Docker Compose
+### ⚠️ 포트 변경 | Change Port
 
-저장소의 `docker-compose.yml`은 host 네트워크 + 소스 빌드(`build: .`)를 사용합니다.
+### 🇰🇷
+8088 포트가 사용 중이면 `EB_SERVER_PORT` 환경 변수를 사용하세요.
 
-```sh
-docker compose up -d
-```
+### 🇺🇸
+If port 8088 is in use, change it using `EB_SERVER_PORT`.
 
-기본 설정:
+---
 
-- **네트워크**: host — 포트 매핑이 없으며 호스트의 `Server_Port`(기본 8088)에 직접 바인딩됩니다.
-- **데이터**: `./data` 볼륨 → 컨테이너 `/data`
-- **재시작**: `unless-stopped`
+## ⚙️ 설정 | Configuration
 
-환경 변수는 compose 파일에 주석 처리된 예시를 참고해 추가할 수 있습니다:
+### 환경 변수 | Environment Variables
 
-```yaml
-environment:
-  - EB_ST_TOKEN=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx   # optional SmartThings PAT
-  - EB_SERVER_PORT=8088                                # change if 8088 is taken
-```
+| 변수 | 설명 (KR) | Description (EN) | 기본값 |
+|------|----------|----------------|--------|
+| `EB_ST_TOKEN` | SmartThings PAT | SmartThings token | 없음 |
+| `EB_SERVER_PORT` | 서버 포트 | Server port | 8088 |
+| `EB_SERVER_IP` | 바인딩 IP | Bind IP | 자동 |
+| `EB_FW_TIMEOUT` | 타임아웃 | Forward timeout | 5 |
+| `EB_MDNS_ENABLED` | mDNS 비활성화 | Disable mDNS | 활성 |
+| `EB_MDNS_NAME` | mDNS 이름 | mDNS name | EdgeBridge-aeb |
+| `EB_DATA_DIR` | 데이터 경로 | Data directory | /data |
+| `EB_TZ` | 타임존 | Timezone | UTC |
 
-선택적으로 설정 파일을 마운트할 수도 있습니다:
+---
 
-```yaml
-volumes:
-  - ./edgebridge.cfg:/usr/src/app/edgebridge.cfg
-```
-
-> `docker-compose.bridge.yml`은 이 저장소에 포함되어 있지 않습니다. 포트 격리(bridge 네트워크)가 필요하면 직접 작성해야 합니다. 단, bridge 네트워크에서는 mDNS 자동 발견과 실제 클라이언트 IP 기반 기능(디바이스→허브 포워딩, MQTT 허브 포워딩)이 제한될 수 있으며, 단순 `/api/forward`만 사용하는 경우에는 문제없습니다.
-
-## 데이터 저장
-
-컨테이너의 `/data`에 아래 파일과 폴더가 영속 저장됩니다.
-
-```text
-.registrations
-redirects.jsonl
-callbacks.jsonl
-mqtt_sessions.jsonl
-mqtt_certs/
-install_id
-```
-
-MQTT 세션은 `mqtt_sessions.jsonl`에 메타데이터가 저장됩니다. 브리지 재시작 시 기존 세션을 복구하고, 인증서/키와 endpoint 정보가 남아 있는 세션은 자동 재연결을 시도합니다.
-
-## 설정
-
-Docker에서는 환경 변수 사용을 권장합니다.
-
-| 환경 변수 | 설명 | 기본값 |
-| --- | --- | --- |
-| `EB_ST_TOKEN` | SmartThings PAT. `api.smartthings.com` 요청에 자동 주입 | 없음 |
-| `EB_SERVER_PORT` | 서버 포트 | `8088` |
-| `EB_SERVER_IP` | 바인딩 IP. 보통 비워둠 | 자동 |
-| `EB_FW_TIMEOUT` | forward 타임아웃, 초 | `5` |
-| `EB_MDNS_ENABLED` | mDNS 끄기: `no`, `false`, `0` | 켜짐 |
-| `EB_MDNS_NAME` | mDNS 광고 이름 | `EdgeBridge-aeb` |
-| `EB_DATA_DIR` | 데이터 저장 경로 | `/data` |
-| `EB_TZ` | 로그 타임존 | `UTC` |
-
-파일로 관리하고 싶으면 `edgebridge.cfg`를 컨테이너의 `/usr/src/app/edgebridge.cfg`에 마운트합니다.
+### 📄 설정 파일 | Config File
 
 ```ini
 [config]
@@ -130,84 +144,77 @@ mDNS_name = EdgeBridge-aeb
 Timezone = UTC
 ```
 
-Docker 환경에서는 `Data_Dir`를 비워두는 것이 좋습니다. 이미지가 기본적으로 `EB_DATA_DIR=/data`를 사용합니다.
+---
 
-REST API 문서는 [API.md](API.md)를 참고하세요.
+## 💾 데이터 저장 | Data Storage
 
-참고 Edge 드라이버: [WooBooung/EdgeBridgeBaseDriver](https://github.com/WooBooung/EdgeBridgeBaseDriver)
+### 🇰🇷
+컨테이너 `/data` 경로에 아래 데이터가 저장됩니다.
 
-## 웹 대시보드
+### 🇺🇸
+The following data is persisted in `/data`:
 
-```text
+```
+.registrations
+redirects.jsonl
+callbacks.jsonl
+mqtt_sessions.jsonl
+mqtt_certs/
+install_id
+```
+
+### 🇰🇷
+MQTT 세션은 자동 복구 및 재연결을 지원합니다.
+
+### 🇺🇸
+MQTT sessions are automatically restored and reconnected.
+
+---
+
+## 🌐 웹 대시보드 | Web Dashboard
+
+```
 http://<host-ip>:8088/web
 ```
 
-대시보드에서 확인할 수 있는 항목:
+### 🇰🇷
+브라우저에서 접속하여 상태 및 설정을 확인할 수 있습니다.
 
-- 브리지 버전, 포트, 데이터 경로
-- SmartThings PAT 설정/검증 상태
-- mDNS 상태
-- MQTT 세션 목록
-- redirect/callback 목록
-- 등록된 device to hub forwarding 목록
-- 최근 로그
+### 🇺🇸
+Access via browser to monitor and manage the service.
 
-일부 설정은 대시보드에서 수정할 수 있습니다.
+---
 
-## 네트워크 모드
+## 🧠 네트워크 모드 | Network Mode
 
-권장: host 네트워크
+### 🇰🇷
+- host 네트워크 권장
+- bridge 사용 시 일부 기능 제한
 
-```sh
-docker run -d --name edgebridge-aeb \
-  --network host \
-  -v $(pwd)/data:/data \
-  --restart unless-stopped \
-  woobooung/edgebridge-aeb:latest
-```
+### 🇺🇸
+- host network recommended
+- bridge mode may limit some features
 
-host 네트워크가 필요한 기능:
+---
 
-- mDNS 자동 발견
-- device to hub forwarding
-- MQTT 메시지 허브 포워딩
-- 클라이언트 실제 LAN IP 감지
+## 🔗 참고 | References
 
-bridge 네트워크를 쓰면 컨테이너에서 요청 출발지가 Docker gateway IP로 보일 수 있습니다. 단순 `/api/forward`만 쓰는 경우에는 bridge 네트워크도 사용할 수 있습니다.
+- EdgeBridge 기반 프로젝트  
+  https://github.com/WooBooung/edgebridge
 
-## 직접 실행
+- Edge 드라이버  
+  https://github.com/WooBooung/EdgeBridgeBaseDriver
 
-Docker 없이 실행할 수도 있습니다.
+---
 
-```sh
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python3 edgebridge.py
-```
+## 📄 라이선스 | License
 
-디버그 로그는 `-d` 플래그로 켭니다:
+Apache 2.0 License
 
-```sh
-python3 edgebridge.py -d
-```
+---
 
-직접 실행 시 데이터는 **실행 디렉터리**(`Data_Dir` 또는 `EB_DATA_DIR`로 변경 가능)에 저장됩니다. mDNS는 실제 호스트 네트워크 인터페이스에서 동작합니다.
+## 🙌 기여 | Contributing
 
-운영 환경에서는 Docker 실행을 권장합니다.
+PR 및 이슈 환영합니다!
 
-## 감사
-
-- MQTT 브리지 참고 구현을 공유해주신 두더싱 스마트싱스 네이버 카페 산사나이님께 감사드립니다.
-- edgebridge 프로젝트를 공개해주신 Todd Austin 및 contributors께 감사드립니다.
-
-관련 링크:
-
-- [WooBooung/edgebridge](https://github.com/WooBooung/edgebridge)
-- [AndroidEdgeBridge(AEB)](https://aeb.dothesmartthings.com)
-- [AEB 개발자 가이드](https://aeb.dothesmartthings.com/dev-guide.html)
-- [두더싱 스마트싱스 네이버 카페](https://cafe.naver.com/dothesmartthings)
-
-## 라이선스
-
-Apache License 2.0
+Contributions and issues are welcome!
