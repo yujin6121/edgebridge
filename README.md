@@ -53,20 +53,6 @@ It ensures stable mDNS discovery and LAN-based features.
 ### ▶ Docker Run
 
 ```bash
-mkdir -p ./data
-
-docker run -d --name edgebridge-aeb \
-  --network host \
-  -v $(pwd)/data:/data \
-  --restart unless-stopped \
-  woobooung/edgebridge-aeb:latest
-```
-
----
-
-### ▶ 직접 빌드 | Build from Source
-
-```bash
 docker build -t edgebridge-aeb .
 
 docker run -d --name edgebridge-aeb \
