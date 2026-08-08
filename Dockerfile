@@ -1,0 +1,40 @@
+# edgebridge-aeb -- multi-arch image (linux/amd64, linux/arm64)
+#
+# python:3.12-slim publishes a multi-arch manifest, and cryptography / paho-mqtt / requests
+# all ship prebuilt wheels for amd64 + arm64, so no compiler/Rust toolchain is needed here.
+# This keeps QEMU cross-builds in CI fast and reliable.
+#   - Synology NAS (Intel/AMD = amd64, modern ARM models = arm64)
+#   - Raspberry Pi OS 64-bit (Pi 3 / 4 / 5 / Zero 2 W)
+# For 32-bit ARM (armv7) see the README -- build locally with build tooling.
+FROM python:3.12-slim
+
+# OCI labels -- Docker Hub / GHCR show these as the "Source repository" link & description.
+LABEL org.opencontainers.image.title="edgebridge-aeb" \
+      org.opencontainers.image.description="SmartThings Edge forwarding bridge -- toddaustin07/edgebridge fork with AEB MQTT bridge, redirect/callback APIs, and a multi-byte (Korean) truncation fix." \
+      org.opencontainers.image.source="https://github.com/WooBooung/edgebridge" \
+      org.opencontainers.image.url="https://github.com/WooBooung/edgebridge" \
+      org.opencontainers.image.licenses="Apache-2.0"
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY edgebridge.py .
+COPY app ./app
+COPY edgebridge.cfg .
+COPY web ./web
+
+# Build identity (passed by CI) -- surfaced in /api/ping so builds are distinguishable.
+ARG BUILD_SHA=dev
+ARG BUILD_DATE=
+ENV EB_BUILD_SHA=$BUILD_SHA \
+    EB_BUILD_DATE=$BUILD_DATE
+
+# Persist registrations / redirects / callbacks / mqtt certs outside the container.
+ENV EB_DATA_DIR=/data
+VOLUME ["/data"]
+
+EXPOSE 8088
+
+CMD ["python", "./edgebridge.py"]

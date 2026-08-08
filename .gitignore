@@ -1,0 +1,10 @@
+.registrations
+redirects.jsonl
+callbacks.jsonl
+mqtt_sessions.jsonl
+mqtt_certs/
+data/
+edgebridge.log
+__pycache__/
+*.pyc
+.DS_Store
